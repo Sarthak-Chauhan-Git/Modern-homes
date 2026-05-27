@@ -29,7 +29,7 @@ export function ContactForm() {
   } = useForm<ContactData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data: ContactData) => {
-    const whatsappWindow = window.open("", "_blank", "noopener,noreferrer");
+    const whatsappUrl = buildContactWhatsAppUrl(data);
 
     const { error } = await createClient()
       .from("contact_inquiries")
@@ -41,18 +41,16 @@ export function ContactForm() {
       });
 
     if (error) {
-      whatsappWindow?.close();
       toast.error(error.message);
       return;
     }
 
-    const whatsappUrl = buildContactWhatsAppUrl(data);
-
-    if (whatsappWindow) {
-      whatsappWindow.location.href = whatsappUrl;
-    } else {
-      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    if (whatsappUrl === "#") {
+      toast.error("WhatsApp is not configured for this site yet.");
+      return;
     }
+
+    window.location.assign(whatsappUrl);
 
     toast.success("Message sent! We'll be in touch.");
     reset();
