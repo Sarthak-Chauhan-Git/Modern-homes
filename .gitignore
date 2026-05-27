@@ -1,0 +1,56 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build output
+dist/
+build/
+out/
+.tmp/
+.cache/
+*.tsbuildinfo
+
+# Production
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Misc
+.parcel-cache/
+.next/
+.nuxt/
+.expo/
+
+# MD
+CURSOR_PROMPT.md
+MODERN_HOMES_BLUEPRINT.md
+MODERN_HOMES_PHASES.md
+plan.md
+DEPLOYMENT_TEST_SHEET.md
+dummy_products.sql
+package-lock.json
+Images/
+utils/supabase/
+
+# cursor
+.cursor
