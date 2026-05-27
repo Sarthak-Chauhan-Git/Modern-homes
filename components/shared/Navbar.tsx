@@ -4,12 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
-import {
-  ChevronDown,
-  Menu,
-  ShoppingCart,
-  X,
-} from "lucide-react";
+import { ChevronDown, Menu, ShoppingCart, X } from "lucide-react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { cn } from "@/lib/utils/cn";
 import { CATEGORY_TILES } from "@/lib/constants/categories";
@@ -76,7 +71,7 @@ export function Navbar() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
           <Link
             href="/"
-            className="font-display text-xl tracking-[0.16em] text-primary md:text-2xl md:tracking-[0.25em]"
+            className="font-display text-lg tracking-[0.12em] text-primary md:text-xl md:tracking-[0.18em]"
           >
             MODERN HOMES
           </Link>
@@ -142,40 +137,54 @@ export function Navbar() {
             )}
           </div>
 
-          <div className="hidden items-center gap-4 md:flex">
-            <button
-              className="relative rounded-full p-2 text-primary transition hover:bg-surface-2"
-              onClick={openCart}
-              aria-label="Cart"
-            >
-              <ShoppingCart size={18} />
-              {mounted && totalItems > 0 ? (
-                <span className="absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
-                  {totalItems}
-                </span>
-              ) : null}
-            </button>
-            {mounted && accountLabel ? (
-              <div className="flex items-center gap-3">
-                <span className="max-w-[150px] truncate text-xs font-semibold text-primary" title={accountLabel}>
-                  {accountLabel}
-                </span>
+          <div className="hidden items-center md:ml-6 md:flex">
+            <div className="relative flex items-center gap-2 rounded-full border border-border bg-white/80 px-2 py-1 shadow-sm">
+              <button
+                className="relative flex h-8 w-8 items-center justify-center rounded-full text-primary transition hover:bg-surface-2"
+                onClick={openCart}
+                aria-label="Cart"
+              >
+                <ShoppingCart size={16} />
+                {mounted && totalItems > 0 ? (
+                  <span className="absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
+                    {totalItems}
+                  </span>
+                ) : null}
+              </button>
+              <span className="h-5 w-px bg-border/60" />
+              <Link
+                href="/orders"
+                className="px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary transition hover:text-accent"
+              >
+                Orders
+              </Link>
+              <span className="h-5 w-px bg-border/60" />
+              {mounted && accountLabel ? (
                 <button
                   type="button"
                   onClick={logout}
-                  className="rounded-full border border-border px-4 py-2 text-xs font-semibold uppercase tracking-widest text-primary transition hover:border-accent hover:text-accent"
+                  className="group relative px-3 py-1 text-[11px] font-semibold text-primary"
+                  aria-label="Logout"
                 >
-                  Logout
+                  <span
+                    className="block max-w-[110px] truncate transition group-hover:opacity-0"
+                    title={accountLabel}
+                  >
+                    {accountLabel}
+                  </span>
+                  <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-[10px] font-semibold uppercase tracking-[0.18em] opacity-0 transition group-hover:opacity-100 text-accent">
+                    Logout
+                  </span>
                 </button>
-              </div>
-            ) : (
-              <Link
-                href="/auth/login"
-                className="rounded-full border border-border px-4 py-2 text-xs font-semibold uppercase tracking-widest text-primary transition hover:border-accent hover:text-accent"
-              >
-                Login
-              </Link>
-            )}
+              ) : (
+                <Link
+                  href="/auth/login"
+                  className="px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary transition hover:text-accent"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
           </div>
 
           <button
@@ -279,6 +288,13 @@ export function Navbar() {
                 >
                   Cart
                 </button>
+                <Link
+                  href="/orders"
+                  className="flex-1 rounded-full border border-border px-4 py-2 text-center text-xs font-semibold uppercase tracking-widest text-primary"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  My Orders
+                </Link>
                 {mounted && accountLabel ? (
                   <button
                     type="button"
@@ -298,7 +314,10 @@ export function Navbar() {
                 )}
               </div>
               {mounted && accountLabel ? (
-                <p className="mt-3 truncate text-center text-xs text-text-muted" title={accountLabel}>
+                <p
+                  className="mt-3 truncate text-center text-xs text-text-muted"
+                  title={accountLabel}
+                >
                   {accountLabel}
                 </p>
               ) : null}

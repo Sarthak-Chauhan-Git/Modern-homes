@@ -32,14 +32,31 @@ function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword(data);
+    const { data: authData, error } =
+      await supabase.auth.signInWithPassword(data);
 
     if (error) {
-      toast.error(error.message);
+      const message = error.message?.toLowerCase() ?? "";
+      if (
+        message.includes("email not confirmed") ||
+        message.includes("confirm your email")
+      ) {
+        toast.error(
+          "Please check your email and confirm your account before logging in.",
+        );
+      } else {
+        toast.error(error.message);
+      }
       return;
     }
 
-    toast.success("Welcome back!");
+    const fullName = authData?.user?.user_metadata?.full_name as
+      | string
+      | undefined;
+    const fallback = authData?.user?.email?.split("@")[0];
+    const firstName = fullName?.split(" ")[0];
+    const greetName = firstName || fullName || fallback;
+    toast.success(greetName ? `Welcome back, ${greetName}!` : "Welcome back!");
     const redirect = searchParams.get("redirect") || "/";
     router.push(redirect);
     router.refresh();
@@ -50,7 +67,9 @@ function LoginForm() {
       <p className="text-center font-display text-xl tracking-[0.14em] text-primary sm:text-2xl sm:tracking-[0.2em]">
         MODERN HOMES
       </p>
-      <p className="mt-2 text-center text-sm text-text-muted">Sign in to your account</p>
+      <p className="mt-2 text-center text-sm text-text-muted">
+        Sign in to your account
+      </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
         <div>
@@ -82,7 +101,9 @@ function LoginForm() {
             {showPassword ? "Hide" : "Show"}
           </button>
           {errors.password ? (
-            <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+            <p className="mt-1 text-sm text-red-600">
+              {errors.password.message}
+            </p>
           ) : null}
         </div>
 
@@ -112,9 +133,7 @@ export default function LoginPage() {
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
       <Suspense
-        fallback={
-          <div className="text-center text-text-muted">Loading...</div>
-        }
+        fallback={<div className="text-center text-text-muted">Loading...</div>}
       >
         <LoginForm />
       </Suspense>

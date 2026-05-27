@@ -1,5 +1,5 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey =
@@ -39,27 +39,40 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
   const pathname = request.nextUrl.pathname;
 
-  if (pathname.startsWith('/checkout') && !user) {
+  if (pathname.startsWith("/checkout") && !user) {
     return NextResponse.redirect(
-      new URL('/auth/login?redirect=/checkout', request.url),
+      new URL("/auth/login?redirect=/checkout", request.url),
     );
   }
 
-  if (pathname.startsWith('/admin')) {
+  if (pathname.startsWith("/orders") && !user) {
+    return NextResponse.redirect(
+      new URL("/auth/login?redirect=/orders", request.url),
+    );
+  }
+
+  if (pathname.startsWith("/admin")) {
     if (!user)
-      return NextResponse.redirect(new URL('/auth/login', request.url));
+      return NextResponse.redirect(new URL("/auth/login", request.url));
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
       .single();
-    if (profile?.role !== 'admin')
-      return NextResponse.redirect(new URL('/', request.url));
+    if (profile?.role !== "admin")
+      return NextResponse.redirect(new URL("/", request.url));
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ['/checkout', '/checkout/:path*', '/admin', '/admin/:path*'],
+  matcher: [
+    "/checkout",
+    "/checkout/:path*",
+    "/orders",
+    "/orders/:path*",
+    "/admin",
+    "/admin/:path*",
+  ],
 };
